@@ -121,7 +121,7 @@ View(Salary_Data)
 Salary_Data[c("Title", "ID", "Agencyname")]
 Salary_Data[2,3]="Sam"
 Salary_Data[2,3]="Sam"
-
+View(gas_prices)
 
 
 
