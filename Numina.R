@@ -102,11 +102,13 @@ colnames(gas_prices) <- sapply(strsplit(colnames(gas_prices), " "), function(x) 
 
 
 
+library(car)
+head(Freedman)
+str(Freedman)
+summary(Freedman)
+rm(Freedman)
 
-
-
-
-
+median(Freedman$density, na.rm=T)
 
 
 
@@ -243,6 +245,63 @@ Salary_Data[c("Title", "ID", "Agencyname")]
 Salary_Data[2,3]="Sam"
 Salary_Data[2,3]="Sam"
 
+-----------------------------------------------
+#V3
+gas_prices<-read.csv("Gas_price excel.csv")
+View(gas_prices)
+getwd()
+summary(gas_prices)
+head(gas_prices)   
+
+gas_prices <- clean_names(gas_prices)
+head(gas_prices)   
+gas_prices <- clean_names(gas_prices)
+colnames(gas_prices) <- sapply(
+  strsplit(colnames(gas_prices), "_"),
+  function(x) paste(head(x, 2), collapse = "_")
+)
+
+colnames(gas_prices) <- gsub("_", " ", colnames(gas_prices))  # replace _ with space
+colnames(gas_prices) <- tools::toTitleCase(colnames(gas_prices))  # capitalize first letter of each word
+colnames(gas_prices) <- gsub(" ", "_", colnames(gas_prices))  # replace spaces back with _
+colnames(gas_prices) <- gsub("_Average", "", colnames(gas_prices))
+
+colnames(gas_prices)[2]<- "New_York_City"
+colnames(gas_prices)[13]<- "New_York_State"
+
+gas_prices$Date <- as.Date(gas_prices$Date)
+head(gas_prices$Date)
+gas_prices$Date <- as.Date(gas_prices$Date, format = "%m-%d-%Y")
+class(gas_prices$Date)
+
+
+windows()   # Windows
+plot(gas_prices$New_York_City, type="l", main="Time-series", col="red", lwd=2)
+
+windows()
+ggplot(gas_prices, aes(Date, New_York_City)) +
+  geom_line(color = "red", linewidth = 1) +
+  labs(
+    title = "NYC Gas Prices Over Time",
+    x = "Date",
+    y = "Price ($/gallon)"
+  ) +
+  theme_minimal()
+--------------------------------------
+  
+  
+  
+  
+  
+  
+  
+  
+
+
+par(mar = c(5, 4, 4, 2) + 0.1)
+plot(gas_prices$New_York_City, type="l", main="Time-series", col="red", lwd=2)
+dev.off()   # run until you get "null device"
+plot(gas_prices$New_York_City, type="l", main="Time-series", col="red", lwd=2)
 
 
 
@@ -250,6 +309,9 @@ Salary_Data[2,3]="Sam"
 
 
 
+plot(gas_prices$New_York_City, type="l", main="Time-series", col="red", lwd=2)
+
+colnames(gas_prices)
 
 
 
@@ -257,7 +319,83 @@ Salary_Data[2,3]="Sam"
 
 
 
+tail(gas_prices)   
+str(gas_prices)    
 
+#install.packages("janitor")
+library(janitor)
+
+gas_prices <- clean_names(gas_prices)
+
+colnames(gas_prices)
+
+-------------------------------------------------
+duplicated(colnames(gas_prices))
+duplicated(gas_prices$date)
+colnames(gas_prices)[duplicated(colnames(gas_prices))]
+dim(gas_prices)
+head(gas_prices)   
+
+sum(is.finite(gas_prices$New_York_City))
+
+#install.packages("ggplot2")
+library(ggplot2)
+
+------------------------------------------------------------------------------
+library(janitor)
+
+
+duplicated(colnames(gas_prices))
+colnames(gas_prices)[duplicated(colnames(gas_prices))]
+
+gas_prices$Date <- as.Date(
+  gas_prices$Date,
+  format = "%m-%d-%Y"
+)
+
+head(gas_prices$Date)
+
+
+
+summary(gas_prices$Date)
+
+library(ggplot2)
+
+
+
+----------------------------------------------
+  names(gas_prices) <- make.names(names(gas_prices), unique = TRUE)
+library(tidyr)
+library(dplyr)
+
+library(ggplot2)
+library(dplyr)   # only if you used %>%
+
+
+ggplot(gas_long, aes(x = Date, y = Price, color = City)) +
+  geom_line(linewidth = 0.1) +
+  labs(
+    title = "Gas Prices Over Time by City",
+    x = "Date",
+    y = "Price ($/gallon)"
+  ) +
+  theme_minimal() +
+  theme(
+    legend.position = "right"
+  )
+
+gas_long %>%
+  filter(is.na(Date) | is.na(Price))# NA values
+
+dev.off()
+ggplot(gas_long, aes(x = Date, y = Price, color = City)) +
+  geom_line(linewidth = 0.1) +
+  labs(
+    title = "Gas Prices Over Time by City",
+    x = "Date",
+    y = "Price ($/gallon)"
+  ) +
+  theme_minimal()
 
 
 
