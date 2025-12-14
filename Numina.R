@@ -247,14 +247,13 @@ Salary_Data[2,3]="Sam"
 
 -----------------------------------------------
 #V3
-gas_prices<-read.csv("Gas_price excel.csv")
+gas_prices<-read.csv("Gas Data_2017.csv")
 View(gas_prices)
 getwd()
 summary(gas_prices)
 head(gas_prices)   
 
-gas_prices <- clean_names(gas_prices)
-head(gas_prices)   
+library(janitor)
 gas_prices <- clean_names(gas_prices)
 colnames(gas_prices) <- sapply(
   strsplit(colnames(gas_prices), "_"),
@@ -271,6 +270,7 @@ colnames(gas_prices)[13]<- "New_York_State"
 
 gas_prices$Date <- as.Date(gas_prices$Date)
 head(gas_prices$Date)
+
 gas_prices$Date <- as.Date(gas_prices$Date, format = "%m-%d-%Y")
 class(gas_prices$Date)
 
@@ -278,40 +278,51 @@ class(gas_prices$Date)
 windows()   # Windows
 plot(gas_prices$New_York_City, type="l", main="Time-series", col="red", lwd=2)
 
+library(tidyr)
+library(dplyr)
+
+library(ggplot2)
+library(dplyr)
 windows()
 ggplot(gas_prices, aes(Date, New_York_City)) +
-  geom_line(color = "red", linewidth = 1) +
+  geom_line(color = "red", linewidth = 0.1) +
   labs(
     title = "NYC Gas Prices Over Time",
     x = "Date",
     y = "Price ($/gallon)"
   ) +
   theme_minimal()
---------------------------------------
-  
-  
-  
-  
-  
-  
-  
-  
 
+dev.off()
+windows()
 
-par(mar = c(5, 4, 4, 2) + 0.1)
-plot(gas_prices$New_York_City, type="l", main="Time-series", col="red", lwd=2)
-dev.off()   # run until you get "null device"
-plot(gas_prices$New_York_City, type="l", main="Time-series", col="red", lwd=2)
+head(gas_prices$Date)
+str(gas_prices$`Gasoline prices (Dollars per Gallon)`)
+names(gas_prices)
 
 
 
+library(zoo)
+
+WGP <- zoo(
+  gas_prices$New_York_State,
+  as.Date(gas_prices$Date)
+)
+
+WGP1 <- aggregate(WGP, as.yearqtr)
 
 
+par(mfrow = c(2,1),
+    mar = c(3, 4, 2, 1))  # bottom, left, top, right
 
+plot(WGP, type = "l",
+     main = "Weekly gasoline prices – NY State",
+     col = "red", lwd = 0.1)
 
-plot(gas_prices$New_York_City, type="l", main="Time-series", col="red", lwd=2)
+plot(WGP1, type = "l",
+     main = "Quarterly gasoline prices – NY State",
+     col = "green", lwd = 0.1)
 
-colnames(gas_prices)
 
 
 
